@@ -13,23 +13,9 @@ CREATE TABLE agenzie (
     nome VARCHAR(255),
     indirizzo VARCHAR(255),
     iso VARCHAR(255),
-    esperienza VARCHAR(255)
-);
-
-CREATE TABLE assicurazioni (
-    idassicurazione INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    tipologia VARCHAR(255),
-    nome VARCHAR(255),
-    indirizzo VARCHAR(255),
-    telefono VARCHAR(255)
-);
-
-CREATE TABLE haassicurazione (
-    id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    idagenzia INT NOT NULL,
-    idassicurazione INT NOT NULL,
-    FOREIGN KEY (idagenzia) REFERENCES agenzie(idagenzia),
-    FOREIGN KEY (idassicurazione) REFERENCES assicurazioni(idassicurazione)
+    esperienza VARCHAR(255),
+    rc tinyint(1),
+    annullamento tinyint(1)
 );
 
 CREATE TABLE commenti (
@@ -37,7 +23,7 @@ CREATE TABLE commenti (
     testo VARCHAR(255),
     timestamp TIMESTAMP,
     idagenzia INT NOT NULL,
-    FOREIGN KEY (idagenzia) REFERENCES agenzie(idagenzia)
+    FOREIGN KEY (idagenzia) REFERENCES agenzie(idagenzia) ON DELETE CASCADE
 );
 
 CREATE TABLE viaggio (
@@ -47,15 +33,15 @@ CREATE TABLE viaggio (
     giorn VARCHAR(255),
     nstudenti INT,
     ndocenti INT,
-    invalido VARCHAR(255)
+    invalido tinyint(1)
 );
 
 CREATE TABLE organizza (
     id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     idutente INT NOT NULL,
     cig INT NOT NULL,
-    FOREIGN KEY (idutente) REFERENCES utente(idutente),
-    FOREIGN KEY (cig) REFERENCES viaggio(cig)
+    FOREIGN KEY (idutente) REFERENCES utente(idutente) ON DELETE CASCADE,
+    FOREIGN KEY (cig) REFERENCES viaggio(cig) ON DELETE CASCADE
 );
 
 CREATE TABLE Offerta (
@@ -74,7 +60,7 @@ CREATE TABLE Offerta (
     bus VARCHAR(255),
     punti VARCHAR(255),
     cig INT NOT NULL,
-    FOREIGN KEY (cig) REFERENCES viaggio(cig)
+    FOREIGN KEY (cig) REFERENCES viaggio(cig) ON DELETE CASCADE
 );
 
 CREATE TABLE servizio (
@@ -82,5 +68,5 @@ CREATE TABLE servizio (
     nome VARCHAR(255),
     descrizione VARCHAR(255),
     idofferta INT NOT NULL,
-    FOREIGN KEY (idofferta) REFERENCES Offerta(idofferta)
+    FOREIGN KEY (idofferta) REFERENCES Offerta(idofferta) ON DELETE CASCADE
 );
