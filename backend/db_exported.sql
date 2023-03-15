@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Creato il: Mar 12, 2023 alle 16:13
+-- Creato il: Mar 15, 2023 alle 20:11
 -- Versione del server: 10.4.27-MariaDB
 -- Versione PHP: 8.2.0
 
@@ -24,18 +24,26 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
--- Struttura della tabella `agenzie`
+-- Struttura della tabella `agenzia`
 --
 
-CREATE TABLE `agenzie` (
+CREATE TABLE `agenzia` (
   `idagenzia` int(11) NOT NULL,
   `nome` varchar(255) DEFAULT NULL,
   `indirizzo` varchar(255) DEFAULT NULL,
   `iso` varchar(255) DEFAULT NULL,
   `esperienza` varchar(255) DEFAULT NULL,
-  `rc` tinyint(1) DEFAULT NULL,
-  `annullamento` tinyint(1) DEFAULT NULL
+  `rc` tinyint(1) DEFAULT 0,
+  `annullamento` tinyint(1) DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dump dei dati per la tabella `agenzia`
+--
+
+INSERT INTO `agenzia` (`idagenzia`, `nome`, `indirizzo`, `iso`, `esperienza`, `rc`, `annullamento`) VALUES
+(1, 'AGENZIa1', '[value-2]', '[value-3]', '1', 0, 0),
+(2, 'agenzia2top', 'via solari', '12536', '2', 1, 0);
 
 -- --------------------------------------------------------
 
@@ -59,8 +67,7 @@ CREATE TABLE `commenti` (
 CREATE TABLE `offerta` (
   `idofferta` int(11) NOT NULL,
   `nBusta` varchar(255) DEFAULT NULL,
-  `nome` varchar(255) DEFAULT NULL,
-  `tourOperator` varchar(255) DEFAULT NULL,
+  `idagenzia` int(11) DEFAULT NULL,
   `prezzo` decimal(10,0) DEFAULT NULL,
   `stelle` int(11) DEFAULT NULL,
   `nAlunni` int(11) DEFAULT NULL,
@@ -73,6 +80,16 @@ CREATE TABLE `offerta` (
   `punti` varchar(255) DEFAULT NULL,
   `cig` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dump dei dati per la tabella `offerta`
+--
+
+INSERT INTO `offerta` (`idofferta`, `nBusta`, `idagenzia`, `prezzo`, `stelle`, `nAlunni`, `posizione`, `mezzi`, `ristorante`, `servizioRistorante`, `treno`, `bus`, `punti`, `cig`) VALUES
+(4, '2', 1, '23', 1, 1, '1', '1', '1', '1', '5', '4', '252', 2),
+(5, '3', 2, '180', 1, 1, '1', '1', '1', '1', '5', '4', '60', 2),
+(6, '4', 2, '1', 1, 1, '1', '1', '1', '1', '5', '4', '747', 2),
+(7, '4', 2, '120', 1, 1, '1', '1', '1', '1', '5', '4', '62', 2);
 
 -- --------------------------------------------------------
 
@@ -120,9 +137,7 @@ CREATE TABLE `utente` (
 --
 
 INSERT INTO `utente` (`idutente`, `nome`, `cognome`, `email`, `password`, `telefono`, `tipologia`) VALUES
-(1, 'giulio', 'bombarda', 'admin@gmail.com', 'admin123', '[value-5]', '1'),
 (2, 'a', '[value-2]', 'a@a', 'aaa', '[value-5]', '[value-6]'),
-(3, 'asasdasd', 'adsasdasd', 'asdasd@ffff', '<aa', NULL, NULL),
 (4, 'Giulio', 'Bombarda', 'giuliobomby@gmail.com', '122334', NULL, NULL);
 
 -- --------------------------------------------------------
@@ -147,16 +162,16 @@ CREATE TABLE `viaggio` (
 --
 
 INSERT INTO `viaggio` (`cig`, `nLotto`, `meta`, `giorn`, `ngiorni`, `nstudenti`, `ndocenti`, `invalido`) VALUES
-(1, '123', 'roma', '2023-03-09', 4, 12, 2, 1);
+(2, '123', 'roma', '2023-03-25', 4, 12, 1, 1);
 
 --
 -- Indici per le tabelle scaricate
 --
 
 --
--- Indici per le tabelle `agenzie`
+-- Indici per le tabelle `agenzia`
 --
-ALTER TABLE `agenzie`
+ALTER TABLE `agenzia`
   ADD PRIMARY KEY (`idagenzia`);
 
 --
@@ -171,7 +186,8 @@ ALTER TABLE `commenti`
 --
 ALTER TABLE `offerta`
   ADD PRIMARY KEY (`idofferta`),
-  ADD KEY `cig` (`cig`);
+  ADD KEY `cig` (`cig`),
+  ADD KEY `fk_foreign_key_name` (`idagenzia`);
 
 --
 -- Indici per le tabelle `organizza`
@@ -205,10 +221,10 @@ ALTER TABLE `viaggio`
 --
 
 --
--- AUTO_INCREMENT per la tabella `agenzie`
+-- AUTO_INCREMENT per la tabella `agenzia`
 --
-ALTER TABLE `agenzie`
-  MODIFY `idagenzia` int(11) NOT NULL AUTO_INCREMENT;
+ALTER TABLE `agenzia`
+  MODIFY `idagenzia` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT per la tabella `commenti`
@@ -220,7 +236,7 @@ ALTER TABLE `commenti`
 -- AUTO_INCREMENT per la tabella `offerta`
 --
 ALTER TABLE `offerta`
-  MODIFY `idofferta` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `idofferta` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT per la tabella `organizza`
@@ -238,13 +254,13 @@ ALTER TABLE `servizio`
 -- AUTO_INCREMENT per la tabella `utente`
 --
 ALTER TABLE `utente`
-  MODIFY `idutente` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `idutente` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT per la tabella `viaggio`
 --
 ALTER TABLE `viaggio`
-  MODIFY `cig` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `cig` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- Limiti per le tabelle scaricate
@@ -254,12 +270,13 @@ ALTER TABLE `viaggio`
 -- Limiti per la tabella `commenti`
 --
 ALTER TABLE `commenti`
-  ADD CONSTRAINT `commenti_ibfk_1` FOREIGN KEY (`idagenzia`) REFERENCES `agenzie` (`idagenzia`) ON DELETE CASCADE;
+  ADD CONSTRAINT `commenti_ibfk_1` FOREIGN KEY (`idagenzia`) REFERENCES `agenzia` (`idagenzia`) ON DELETE CASCADE;
 
 --
 -- Limiti per la tabella `offerta`
 --
 ALTER TABLE `offerta`
+  ADD CONSTRAINT `fk_foreign_key_name` FOREIGN KEY (`idagenzia`) REFERENCES `agenzia` (`idagenzia`),
   ADD CONSTRAINT `offerta_ibfk_1` FOREIGN KEY (`cig`) REFERENCES `viaggio` (`cig`) ON DELETE CASCADE;
 
 --

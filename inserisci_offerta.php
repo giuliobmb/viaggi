@@ -12,10 +12,10 @@ if (!$conn) {
 
 // Controllo se il form è stato sottomesso
 if (isset($_POST["nBusta"])) {
+
     // Prendo i valori dai campi del form
     $nBusta = $_POST["nBusta"];
-    $nome = $_POST["nome"];
-    $tourOperator = $_POST["tourOperator"];
+    $agenzia = $_POST["agenzia"];
     $prezzo = $_POST["prezzo"];
     $stelle = $_POST["stelle"];
     $nAlunni = $_POST["nAlunni"];
@@ -28,97 +28,119 @@ if (isset($_POST["nBusta"])) {
     //$punti = $_POST["punti"];
     $cig = $_POST["cig"];
 
-    $punti += $prezzo_min * 30 / $proposte[$i][1];
+    //////////////////////////////////////////////
+    $sqlp = "SELECT MIN(prezzo) FROM offerta GROUP BY(idofferta)";
+
+    
+
+    $queryp = mysqli_query($conn, $sqlp);
+
+    $prezzo_min = mysqli_fetch_array($queryp)["MIN(prezzo)"];
+
+    
+
+    $sqlaa = "SELECT esperienza FROM agenzia WHERE idagenzia='".$agenzia."'";
+
+    $queryaa = mysqli_query($conn, $sqlp);
+
+    $esperienza = mysqli_fetch_array($queryp)["esperienza"];
+
+
+    $punti += $prezzo_min * 30 / $prezzo;
     //echo 'punti prezzo: '.$punti;
-    //echo $prezzo_min;
-    if ($proposte[$i][2] == 1) {
+
+    if ($stelle == 1) {
         $punti += 13;
-    } else if ($proposte[$i][2] == 2) {
+    } else if ($stelle == 2) {
         $punti += 10;
-    } else if ($proposte[$i][2] == 3) {
+    } else if ($stelle == 3) {
         $punti += 8;
-    } else if ($proposte[$i][2] == 4) {
+    } else if ($stelle == 4) {
         $punti += 5;
     }
     //echo 'punti stelle: '.$punti;
 
-    if ($proposte[$i][3] == 1) {
+    if ($nAlunni == 1) {
         $punti += 6;
-    } else if ($proposte[$i][3] == 2) {
+    } else if ($nAlunni == 2) {
         $punti += 4;
-    } else if ($proposte[$i][3] == 3) {
+    } else if ($nAlunni == 3) {
         $punti += 1;
     }
     //echo 'punti camere: '.$punti;
 
-    if ($proposte[$i][4] == 1) {
+    if ($posizione == 1) {
         $punti += 20;
-        if ($proposte[$i][5] == 1)
+        if ($mezzi == 1)
             $punti += 2;
-    } else if ($proposte[$i][4] == 2) {
+    } else if ($posizione  == 2) {
         $punti += 15;
-    } else if ($proposte[$i][4] == 3) {
+    } else if ($posizione  == 3) {
         $punti += 12;
-    } else if ($proposte[$i][4] == 4) {
+    } else if ($posizione  == 4) {
         $punti += 2;
     }
     //echo 'punti zona e mezzi: '.$punti;
 
-    if ($proposte[$i][6] == 1) {
+    if ($ristorante == 1) {
         $punti += 9;
-    } else if ($proposte[$i][6] == 2) {
+    } else if ($ristorante == 2) {
         $punti += 6;
-    } else if ($proposte[$i][6] == 3) {
+    } else if ($ristorante == 3) {
         $punti += 0;
     }
     //echo 'punti ristorazione: '.$punti;
 
-    if ($proposte[$i][7] == 1) {
+    if ($servizioRistorante == 1) {
         $punti += 7;
-    } else if ($proposte[$i][7] == 2) {
+    } else if ($servizioRistorante == 2) {
         $punti += 4;
     }
     //echo 'punti servizio: '.$punti;
 
-    if ($proposte[$i][8] == 1) {
+    if ($treno == 1) {
         $punti += 10;
-    } else if ($proposte[$i][8] == 2) {
+    } else if ($treno == 2) {
         $punti += 5;
-    } else if ($proposte[$i][8] == 3) {
+    } else if ($treno == 3) {
         $punti += 4;
-    } else if ($proposte[$i][8] == 4) {
+    } else if ($treno == 4) {
         $punti += 2;
-    } else if ($proposte[$i][8] == 5) {
+    } else if ($treno == 5) {
         $punti += 0;
     }
     //echo 'punti treno: '.$punti;
 
-    if ($proposte[$i][9] == 1) {
+    if ($bus == 1) {
         $punti += 10;
-    } else if ($proposte[$i][9] == 2) {
+    } else if ($bus == 2) {
         $punti += 5;
-    } else if ($proposte[$i][9] == 3) {
+    } else if ($bus == 3) {
         $punti += 0;
-    } else if ($proposte[$i][9] == 4) {
+    } else if ($bus == 4) {
         $punti += 0;
     }
     //echo 'punti bus: '.$punti;
 
-    if ($proposte[$i][10] == 1) {
+    if ($esperienza == 1) {
         $punti += 5;
-    } else if ($proposte[$i][10] == 2) {
+    } else if ($esperienza == 2) {
         $punti += 3;
-    } else if ($proposte[$i][10] == 3) {
+    } else if ($esperienza == 3) {
         $punti += 1;
     }
 
 
 
 
+    $punti = intval($punti, 10);
 
+    if($punti > 100){
+        $punti = 100;
+    }
 
     // Preparo la query SQL per l'inserimento dei dati
-    $sql = "INSERT INTO Offerta (nBusta, nome, tourOperator, prezzo, stelle, nAlunni, posizione, mezzi, ristorante, servizioRistorante, treno, bus, cig) VALUES ('$nBusta', '$nome', '$tourOperator', $prezzo, $stelle, $nAlunni, '$posizione', '$mezzi', '$ristorante', '$servizioRistorante', '$treno', '$bus', $cig)";
+    $sql = "INSERT INTO Offerta (nBusta, idagenzia, prezzo, stelle, nAlunni, posizione, mezzi, ristorante, servizioRistorante, treno, bus, cig, punti) VALUES ('$nBusta', '$agenzia', $prezzo, $stelle, $nAlunni, '$posizione', '$mezzi', '$ristorante', '$servizioRistorante', '$treno', '$bus', '$cig', '$punti')";
 
     // Eseguo la query e controllo se l'operazione è andata a buon fine
     if (mysqli_query($conn, $sql)) {
@@ -207,10 +229,23 @@ if (isset($_POST["nBusta"])) {
             Numero busta<input name="nBusta" id="nome" type="text">
             <br>
             <br>
-            Tour Operator<input name="tourOperator" id="tourOperator" type="text">
-            <br>
-            <br>
-            Nome agenzia<input name="nome" id="nome" type="text" onchange="checkNome()">
+            agenzia
+            <select name="agenzia">
+            <?php
+
+            $sqla = "SELECT nome, idagenzia FROM agenzia";
+
+            $querya = mysqli_query($conn, $sqla);
+
+            while ($row = mysqli_fetch_array($querya)){
+                $nome = $row["nome"];
+                $id = $row["idagenzia"];
+
+                echo '<option value="'.$id.'">'.$nome.'</option>';
+            }
+
+            ?>
+            </select>
             <br>
             <br>
             Prezzo<input name="prezzo" id="prezzo" type="text" onchange="checkPrezzo()">
@@ -283,7 +318,11 @@ if (isset($_POST["nBusta"])) {
                 <option value="2">1 autista</option>
                 <option value="3">viaggio a/r</option>
             </select>
-            <input type="hidden" name="cig" value="<?php if(isset($_GET["cig"])){echo($_GET["cig"]);}else{header("Location: menu.php");} ?>">
+            <input type="hidden" name="cig" value="<?php if (isset($_GET["cig"])) {
+                                                    echo ($_GET["cig"]);
+                                                } else {
+                                                    header("Location: menu.php");
+                                                } ?>">
             <br>
             <br>
             <input type="submit" name="submit" value="Inserisci offerta">

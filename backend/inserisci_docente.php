@@ -26,6 +26,7 @@ $sql = "INSERT INTO `utente` (`nome`, `cognome`, `email`, `password`, `telefono`
 VALUES ('$nome', '$cognome', '$email', '$password', '$telefono')";
 
 if ($conn->query($sql) === TRUE) {
+    header('Location: ../inserisci_docente.php');
     echo "Record created successfully";
 } else {
     echo "Error: " . $sql . "<br>" . $conn->error;

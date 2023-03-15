@@ -88,7 +88,7 @@ if (!isset($_SESSION['email'])) { // se l'utente non è loggato viene automatica
                             <!-- Elimina pulsante -->
                             <?php
                             if ($_SESSION["tipologia"] == 1) {
-                                echo ('<form action="backend/elimina_viaggio.php?cig='.$row["cig"].'" method="post">
+                                echo ('<form action="backend/elimina_viaggio.php?cig='.$row["cig"].'" method="get">
                                 <input type="hidden" name="id" value="'.$row['cig'].'">
                                 <input type="submit" value="Elimina" class="delete-btn" onclick="return confirm("Sei sicuro di voler eliminare questo progetto?");">
                             </form>');
