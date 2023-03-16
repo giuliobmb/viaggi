@@ -106,7 +106,7 @@ if (!isset($_SESSION['email'])) { // se l'utente non è loggato viene automatica
                                 <input type="submit" value="Elimina" class="delete-btn" onclick="return confirm('Sei sicuro di voler eliminare questa agenzia?');">
                             </form>
                             <br>
-                            <form action="commento.php" method="post">
+                            <form action="commento.php" method="get">
                                 <input type="hidden" name="id" value="<?php echo $row['idagenzia']; ?>">
                                 <input type="submit" value="Commenti" class="edit-btn">
                             </form>
